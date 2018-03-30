@@ -8,11 +8,11 @@ namespace WebCrawler
 {
     public class Opperations
     {
-        private readonly CrawlerPrototype _crawlerPrototype;
+        private readonly CrawlLinks _crawler;
 
         public Opperations()
         {
-            this._crawlerPrototype = new CrawlerPrototype();
+            this._crawler = new CrawlLinks();
         }
 
         public async void Crawl()
@@ -20,9 +20,12 @@ namespace WebCrawler
             Console.WriteLine("Enter site to crawl:");
             var site = Console.ReadLine();
 
-            var result = await _crawlerPrototype.CrawlASite(site);
+            var result = _crawler.StartCrawling(site);
 
-            Console.WriteLine(result);
+            foreach (var link in result)
+            {
+                Console.WriteLine(link);
+            }
         }
 
         public void CrawlForSubDomains(string address)

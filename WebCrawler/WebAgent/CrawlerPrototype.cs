@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AngleSharp;
@@ -16,30 +17,35 @@ namespace WebAgent
             this._configuration = Configuration.Default.WithDefaultLoader();
         }
 
-        public async Task<string> CrawlASite(string site)
+        public async Task<HashSet<string>> CrawlASite(string site)
         {
+            HashSet<string> links = new HashSet<string>();
+
             if (string.IsNullOrWhiteSpace(site))
-                return "Bad site";
+            {
+                links.Add("Bad site");
+                return links;
+            }
+                
 
             try
             {
                 var source = await BrowsingContext.New(this._configuration).OpenAsync(site);
 
                 var list = source.QuerySelectorAll("a");
-
-                string stringlist = "";
-
+                
                 foreach (var link in list)
                 {
-                    stringlist += link.GetAttribute("href") + "\n";
+                    links.Add(link.GetAttribute("href")); 
                 }
-                return stringlist;
+                return links;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 Console.WriteLine("");
-                return "Could not crawl site";
+                links.Add("Could not crawl site");
+                return links;
             }
         }
     }
